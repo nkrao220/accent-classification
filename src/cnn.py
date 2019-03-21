@@ -13,6 +13,7 @@ import keras
 from keras.models import Sequential
 from keras.layers import Activation, Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 
+# create X and y arrays with correct shape
 np.random.seed(1)
 df = clean_df('speakers_all.csv')
 
@@ -31,8 +32,11 @@ for i, label in enumerate(labels[1:]):
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=
                     0.2, random_state=1, shuffle=True)
 
+# add depth
 X_train = X_train.reshape(X_train.shape[0], 16, 512, 1)
 X_test = X_test.reshape(X_test.shape[0], 16, 512, 1)
+
+# one hot encode y values
 y_train_hot = to_categorical(y_train)
 y_test_hot = to_categorical(y_test)
 
@@ -53,9 +57,9 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(64, (1, 2)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-# the model so far outputs 3D feature maps (height, width, features)
 
-model.add(Flatten())  # this converts our 3D feature maps to 1D feature vectors
+
+model.add(Flatten())
 model.add(Dense(64))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
@@ -71,9 +75,4 @@ model.compile(loss=keras.losses.binary_crossentropy,
 model.fit(X_train, y_train_hot, batch_size=20, epochs=700, verbose=1,
             validation_data=(X_test, y_test_hot))
 
-# what really optimized my model: smaller learning rate, larger number of epochs,
-#
 print(model.summary())
-
-# Epoch 690/700
-# 131/131 [==============================] - 1s 5ms/step - loss: 0.3533 - acc: 0.8092 - val_loss: 0.9705 - val_acc: 0.7273
