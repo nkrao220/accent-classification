@@ -49,15 +49,23 @@ MFCC's are meant to mimic the biological process of human's creating sound in th
   <b>1) Bin the raw audio signal </b>  
   On short time scales, we assume that audio signals do not change very much. Therefore, we bin the raw audio signal into 20-40 ms frames. Longer frames will vary too much and shorter frames will not provide enough signal. The following steps are applied over every single one of the frames and a set of coefficients is determined for every frame.
 
+  <img src="img/rawaudioex.png" width="350"> <img src="img/spectrogramex.png" width="400">
+
   <b>2) Calculate the periodogram power estimates</b>  
   This process models how the cochlea interprets sounds by vibrating at different locations based on the incoming frequencies. The periodogram is an analog for this process. First, we need to take the Discrete Fourier Transform of every frame. The periodogram power estimate calculated using the following equation:
+  <img src="img/fourier.png" width="300">
+  <img src="img/power.png" width="230">
 
   <b>3) Apply mel filterbank and sum energies in each filter </b>  
   The cochlea can't differentiate between closely spaced frequencies. This problem is amplified at higher frequencies. So, we sum up the signal at various frequencies to get an idea of of how much energy is at that frequency.
 
   This filterbank is a set of 26 triangular filters. These filters are vectors that are mostly zero, except for part of the spectrum. First, we convert frequencies to the Mel Scale (converts actual tone of a frequency to its perceived frequency) We multipy each filter with the power spectrum and add up the resulting coefficients in order to obtain the filterbank energies.
 
-  !(Screenshot of practical cryptology figure)
+  Mel Scale Conversion:  
+  <img src="img/mel_scale.png" width="300">
+
+  Filterbanks:  
+<img src="img/mel_filterbank.png" width="600">
 
   <b>4) Take log of all filter energies </b>  
   We need to take the log of the previously calculated filterbank energies because humans can differentiate between low frequency sounds better than they can between high frequency sounds. We still have 26 coefficients.
@@ -84,6 +92,8 @@ First, I binned my data from the Speech Accent Archive into the same accent bins
 | Africa      | 'Southern African (South Africa, Zimbabwe, Namibia)'            |
 | Bermuda     | 'West Indies and Bermuda (Bahamas, Bermuda, Jamaica, Trinidad)' |
 
+To create the MFCCs, I binned into 31 ms increments (chosen because it gives close to 512 bins. A matrix with a width of 2**n is ideal for CNN), 13 MFCCs, and the default settings for everything else.
+
 ### PCA
 Is there signal in my data?
 
@@ -92,22 +102,26 @@ Is there signal in my data?
 <img src="img/pca_2d.png" width="600">
 
 There's some seperation, but not too much...
+
 #### 3D PCA
 <img src="img/pca_3d.png" width="600">
-
+<img src="img/pca_3d_3.png" width="600">
 
 
 
 
 ### Difference in Accents
+
 <img src="img/side_by_side_heatmap.png" width="600">
 
 <img src="img/mean_heatmap.png" width="600">
 
 
-Show audio samples (raw signal) similar lengths (need 512 width) one from india, one from us
-Subtract both and show mfcc
-Show where on raw sample the differences are located and identify phoneme
+Picked two raw audio files that were similar in length and similar in length to the mean spectrograms above. I picked two points that seemed to have the highest values in the subtracted mean spectrogram. I then listened to the audio files and found that the times corresponded to the following words: "Stella" at 2 seconds and "We need a small plastic snake" around 11 seconds.
+
+<img src="img/hindi9raw.png" width="600">
+
+<img src="img/english3raw.png" width="599">
 
 ## Analysis
 
