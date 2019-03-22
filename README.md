@@ -57,7 +57,7 @@ MFCC's are meant to mimic the biological process of humans creating sound in the
   <img src="img/fourier.png" width="300">
   <img src="img/power.png" width="230">
 
-  <img src="fourier_example.png" width="330">
+  <img src="img/fourier_example.png" width="600">
 
 
   <b>3) Apply mel filterbank and sum energies in each filter </b>  
@@ -112,8 +112,8 @@ Before I got started on creating any models, I wanted to make sure that there we
 There's some separation, but not too much...
 
 #### 3D PCA
-<img src="img/pca_3d.png" width="600">
-<img src="img/pca_3d_3.png" width="600">
+<img src="img/pca_3d.png" width="900">
+<img src="img/pca_3d_3.png" width="900">
 
 Here we can start to see some separation. The clusters are not clearly defined, but that is to be expected as there's probably overlap between between these accents because people native to India could also be settled in the US and vice versa.
 
