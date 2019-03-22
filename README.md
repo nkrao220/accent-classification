@@ -54,7 +54,8 @@ MFCC's are meant to mimic the biological process of humans creating sound in the
   <b>2) Calculate the periodogram power estimates</b>  
   This process models how the cochlea interprets sounds by vibrating at different locations based on the incoming frequencies. The periodogram is an analog for this process. First, we need to take the Discrete Fourier Transform of every frame. The periodogram power estimate is calculated using the following equation:   
 
-  <img src="img/fourier.png" width="300">
+  <img src="img/fourier.png" width="600">
+  
   <img src="img/power.png" width="230">
 
   <img src="img/fourier_example.png" width="600">
