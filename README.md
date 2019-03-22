@@ -41,7 +41,7 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 In the next capstone, I hope to work with Mozilla Voice data. The Mozilla Voice data contains tens of thousands of files of native and non-native speakers speaking different sentences. Because the audio files are so different from speaker to speaker, I am working with the smaller, more static, Speech Accent Archive first in order to get a good working model before trying to predict on the Mozilla Voice data.
 
 ## Mel Frequency Cepstrum Coefficients (MFCC)
-MFCC's are meant to mimic the biological process of human's creating sound in their vocal tract and producing phonemes. Phonemes are base sounds?? that can. By identifying the difference in phonemes, we will be able to differentiate between accents.
+MFCC's are meant to mimic the biological process of humans creating sound in their vocal tract and producing phonemes and the way humans perceive these sounds. Phonemes are base units of sounds that combine to make up words for a language. By identifying the difference in phonemes, we will be able to differentiate between accents.
 
 ### Motivation
 
@@ -52,14 +52,18 @@ MFCC's are meant to mimic the biological process of human's creating sound in th
   <img src="img/rawaudioex.png" width="350"> <img src="img/spectrogramex.png" width="400">
 
   <b>2) Calculate the periodogram power estimates</b>  
-  This process models how the cochlea interprets sounds by vibrating at different locations based on the incoming frequencies. The periodogram is an analog for this process. First, we need to take the Discrete Fourier Transform of every frame. The periodogram power estimate calculated using the following equation:
+  This process models how the cochlea interprets sounds by vibrating at different locations based on the incoming frequencies. The periodogram is an analog for this process. First, we need to take the Discrete Fourier Transform of every frame. The periodogram power estimate is calculated using the following equation:   
+
   <img src="img/fourier.png" width="300">
   <img src="img/power.png" width="230">
 
-  <b>3) Apply mel filterbank and sum energies in each filter </b>  
-  The cochlea can't differentiate between closely spaced frequencies. This problem is amplified at higher frequencies. So, we sum up the signal at various frequencies to get an idea of of how much energy is at that frequency.
+  <img src="fourier_example.png" width="330">
 
-  This filterbank is a set of 26 triangular filters. These filters are vectors that are mostly zero, except for part of the spectrum. First, we convert frequencies to the Mel Scale (converts actual tone of a frequency to its perceived frequency) We multipy each filter with the power spectrum and add up the resulting coefficients in order to obtain the filterbank energies.
+
+  <b>3) Apply mel filterbank and sum energies in each filter </b>  
+  The cochlea can't differentiate between closely spaced frequencies. This problem is amplified at higher frequencies, meaning that greater ranges of frequencies will be interpreted as the same pitch. So, we sum up the signal at various increasing ranges of frequencies to get an idea of of how much energy is at that frequency.
+
+  This filterbank is a set of 26 triangular filters. These filters are vectors that are mostly zero, except for part of the spectrum. First, we convert frequencies to the Mel Scale (converts actual tone of a frequency to its perceived frequency) We multiply each filter with the power spectrum and add up the resulting coefficients in order to obtain the filterbank energies. In the end, we will have a single coefficient for each filter.
 
   Mel Scale Conversion:  
   <img src="img/mel_scale.png" width="300">
@@ -72,6 +76,8 @@ MFCC's are meant to mimic the biological process of human's creating sound in th
 
   <b>5) Take Discrete Cosine Transform (DCT) of the log filterbank energies </b>  
   The standard is to create overlapping filterbanks. Therefore, these energies are correlated and we use DCT to decorrelate them. The higher DCT coefficients are then dropped, which has been shown to perform model performance, leaving us with 13 cepstral coefficients.
+
+  <img src="img/DCT.png" width="300">
 
 ## EDA
 
@@ -92,23 +98,24 @@ First, I binned my data from the Speech Accent Archive into the same accent bins
 | Africa      | 'Southern African (South Africa, Zimbabwe, Namibia)'            |
 | Bermuda     | 'West Indies and Bermuda (Bahamas, Bermuda, Jamaica, Trinidad)' |
 
-To create the MFCCs, I binned into 31 ms increments (chosen because it gives close to 512 bins. A matrix with a width of 2**n is ideal for CNN), 13 MFCCs, and the default settings for everything else.
+For this analysis, I decided to stick to a binary classification. I choose the two groupings of native countries with the most samples: USA and India (South Asia).
+
+To create the MFCCs, I binned into 31 ms increments (chosen because it gives close to 512 bins, which makes setting up a CNN easier, 13 MFCCs, and the default settings for everything else.
 
 ### PCA
-Is there signal in my data?
+Before I got started on creating any models, I wanted to make sure that there were differences in my accent groupings, so I performed PCA.
 
 #### 2D PCA
 
 <img src="img/pca_2d.png" width="600">
 
-There's some seperation, but not too much...
+There's some separation, but not too much...
 
 #### 3D PCA
 <img src="img/pca_3d.png" width="600">
 <img src="img/pca_3d_3.png" width="600">
 
-
-
+Here we can start to see some separation. The clusters are not clearly defined, but that is to be expected as there's probably overlap between between these accents because people native to India could also be settled in the US and vice versa.
 
 ### Difference in Accents
 
@@ -117,7 +124,7 @@ There's some seperation, but not too much...
 <img src="img/mean_heatmap.png" width="600">
 
 
-Picked two raw audio files that were similar in length and similar in length to the mean spectrograms above. I picked two points that seemed to have the highest values in the subtracted mean spectrogram. I then listened to the audio files and found that the times corresponded to the following words: "Stella" at 2 seconds and "We need a small plastic snake" around 11 seconds.
+Picked two raw audio files from each accent that were similar in length to the mean spectrograms above. I picked two points that seemed to have the highest values in the subtracted mean spectrogram. I then listened to the audio files and found that the times corresponded to the following words: "Stella" at 2 seconds and "We need a small plastic snake" around 11 seconds.
 
 <img src="img/hindi9raw.png" width="600">
 
@@ -126,7 +133,11 @@ Picked two raw audio files that were similar in length and similar in length to 
 ## Analysis
 
 ### CNN
+My model:  
+<img src="img/cnn_printout.png" width="600">
 
+Training Accuracy at last epoch: 0.72
+Test Accuracy at last epoch: 0.71
 
 <img src="img/CNN_plots_updated.png" width="600">
 
