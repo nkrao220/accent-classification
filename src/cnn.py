@@ -30,8 +30,10 @@ for i, label in enumerate(labels[1:]):
     y = np.hstack((y, label_temp))
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=
-                    0.2, random_state=1, shuffle=True)
+                    0.1, random_state=1, shuffle=True)
 
+X_train, X_val, y_train, y_val = train_test_split(X_train, X_test,
+                    test_size = 0.1, random_state=1, shuffle=True)
 # add depth
 X_train = X_train.reshape(X_train.shape[0], 16, 512, 1)
 X_test = X_test.reshape(X_test.shape[0], 16, 512, 1)
@@ -39,6 +41,8 @@ X_test = X_test.reshape(X_test.shape[0], 16, 512, 1)
 # one hot encode y values
 y_train_hot = to_categorical(y_train)
 y_test_hot = to_categorical(y_test)
+y_val_hot = to_categorical(y_val)
+
 
 
 
@@ -73,6 +77,6 @@ model.compile(loss=keras.losses.binary_crossentropy,
               optimizer=keras.optimizers.Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0),
               metrics=['accuracy'])
 model.fit(X_train, y_train_hot, batch_size=20, epochs=700, verbose=1,
-            validation_data=(X_test, y_test_hot))
+            validation_data=(X_test, y_val_hot))
 
 print(model.summary())
