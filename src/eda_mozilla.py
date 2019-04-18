@@ -26,7 +26,7 @@ class Mfcc():
 
     def mp3towav(self):
         for filename in self.df[self.col]:
-            pydub.AudioSegment.from_mp3("clips/{}.mp3".format(filename)).export("clips/wav/{}.wav".format(filename), format="wav")
+            pydub.AudioSegment.from_mp3("../data/clips/{}.mp3".format(filename)).export("clips/wav/{}.wav".format(filename), format="wav")
 
     def wavtomfcc(self, file_path):
         wave, sr = librosa.load(file_path, mono=True)
@@ -88,12 +88,7 @@ class Mfcc():
 
 # 354, 293, 61
 if __name__ == '__main__':
-    df = clean_df('validated.tsv')
-    # for filename in tqdm(df['path']):
-    #     try:
-    #         os.rename('clips/{}.mp3'.format(filename), 'clips/val_clips/{}.mp3'.format(filename))
-    #     except:
-    #         pass
+    df = clean_df('../data/validated.tsv')
     mfcc = Mfcc(df, 'path')
     mfcc.mp3towav()
     mfcc.create_mfcc()
