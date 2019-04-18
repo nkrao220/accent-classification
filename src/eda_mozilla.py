@@ -8,11 +8,11 @@ import sklearn.preprocessing
 import pydub
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-
+import os
 def clean_df(file):
     df = pd.read_csv(file, sep='\t')
-    df_us = df[df['accent']=='us'].sample(2000)
-    df_ind = df[df['accent']=='indian'].sample(2000)
+    df_us = df[df['accent']=='us'].sample(16563)
+    df_ind = df[df['accent']=='indian']
     df = df_us.append(df_ind)
     df.drop(['client_id', 'sentence', 'up_votes', 'down_votes', 'age', 'gender'],
         axis=1, inplace=True)
@@ -89,6 +89,11 @@ class Mfcc():
 # 354, 293, 61
 if __name__ == '__main__':
     df = clean_df('validated.tsv')
+    # for filename in tqdm(df['path']):
+    #     try:
+    #         os.rename('clips/{}.mp3'.format(filename), 'clips/val_clips/{}.mp3'.format(filename))
+    #     except:
+    #         pass
     mfcc = Mfcc(df, 'path')
     mfcc.mp3towav()
     mfcc.create_mfcc()
