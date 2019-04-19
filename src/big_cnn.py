@@ -1,6 +1,6 @@
 from keras.models import load_model
+model = load_model('../models/final_model.h5')
 
-model = load_model('final_model.h5')
 
 length = 64
 X_train = np.load('X_train_std.npy').reshape(-1, 16, length, 1)
