@@ -1,4 +1,5 @@
 from keras.models import load_model
+import numpy as np
 model = load_model('../models/final_model.h5')
 
 
