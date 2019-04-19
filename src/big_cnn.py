@@ -4,12 +4,12 @@ model = load_model('../models/final_model.h5')
 
 
 length = 64
-X_train = np.load('X_train_std.npy').reshape(-1, 16, length, 1)
-X_test = np.load('X_test_std.npy').reshape(-1, 16, length, 1)
-X_val = np.load('X_val_std.npy').reshape(-1, 16, length, 1)
-y_train = np.load('y_train.npy')
-y_test = np.load('y_test.npy')
-y_val = np.load('y_val.npy')
+X_train = np.load('X_train_moz.npy').reshape(-1, 16, length, 1)
+X_test = np.load('X_test_moz.npy').reshape(-1, 16, length, 1)
+X_val = np.load('X_val_moz.npy').reshape(-1, 16, length, 1)
+y_train = np.load('y_train_moz.npy')
+y_test = np.load('y_test_moz.npy')
+y_val = np.load('y_val_moz.npy')
 
 callbacks = [TensorBoard(log_dir='./logs')]
 
