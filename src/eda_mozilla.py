@@ -90,7 +90,7 @@ class Mfcc():
 if __name__ == '__main__':
     df = clean_df('../data/validated.tsv')
     mfcc = Mfcc(df, 'path')
-    # mfcc.mp3towav()
+    mfcc.mp3towav()
     mfcc.create_mfcc()
     mfcc.resize_mfcc()
     mfcc.label_samples()
