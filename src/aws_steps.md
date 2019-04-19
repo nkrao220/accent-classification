@@ -12,4 +12,7 @@
 12) ls -l (may need to change permissions for data)
 13) start source activate steps
 14) pip install necessary libraries
-15) start screen 
+15) start screen
+
+/dev/sda1
+/dev/sdf
