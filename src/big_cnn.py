@@ -1,5 +1,19 @@
 from keras.models import load_model
 import numpy as np
+from keras.callbacks import TensorBoard
+from keras.callbacks import Callback
+import tensorflow as tf
+import keras.backend as K
+import matplotlib.pyplot as plt
+import librosa
+import librosa.display
+import IPython.display
+import sklearn.preprocessing
+import pydub
+from keras.utils import to_categorical
+import keras
+from keras.models import Sequential
+
 model = load_model('../models/final_model.h5')
 
 
