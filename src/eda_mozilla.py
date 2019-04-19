@@ -25,7 +25,7 @@ class Mfcc():
         self.col = col
 
     def mp3towav(self):
-        for filename in self.df[self.col]:
+        for filename in tqdm(self.df[self.col]):
             pydub.AudioSegment.from_mp3("../data/clips/{}.mp3".format(filename)).export("../data/clips/wav/{}.wav".format(filename), format="wav")
 
     def wavtomfcc(self, file_path):
