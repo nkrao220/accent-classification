@@ -31,6 +31,10 @@ model.compile(loss=keras.losses.binary_crossentropy,
               optimizer=keras.optimizers.Adam(lr=0.0005),
               metrics=['accuracy'])
 
+history = model.fit(X_train, y_train, batch_size=32, epochs=300, verbose=1,
+            validation_data=(X_val, y_val), callbacks=callbacks)
+
+
 training_loss = history.history['loss']
 test_loss = history.history['val_loss']
 
