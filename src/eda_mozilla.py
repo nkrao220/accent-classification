@@ -13,7 +13,9 @@ def clean_df(file):
     df = pd.read_csv(file, sep='\t')
     df_us = df[df['accent']=='us'].sample(16563)
     df_ind = df[df['accent']=='indian']
+    df_ind = df[df['accent']=='england']
     df = df_us.append(df_ind)
+    df = df.append(df_uk)
     df.drop(['client_id', 'sentence', 'up_votes', 'down_votes', 'age', 'gender'],
         axis=1, inplace=True)
     return df
