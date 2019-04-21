@@ -13,7 +13,7 @@ def clean_df(file):
     df = pd.read_csv(file, sep='\t')
     df_us = df[df['accent']=='us'].sample(16563)
     df_ind = df[df['accent']=='indian']
-    df_ind = df[df['accent']=='england']
+    df_uk = df[df['accent']=='england']
     df = df_us.append(df_ind)
     df = df.append(df_uk)
     df.drop(['client_id', 'sentence', 'up_votes', 'down_votes', 'age', 'gender'],
@@ -38,11 +38,12 @@ class Mfcc():
 
     def create_mfcc(self):
         list_of_mfccs = []
-        for wav in tqdm(self.df[self.col]):
+        uk = self.df[self.df['accent']=='england']
+        for wav in tqdm(uk[self.col]):
             file_name = '../data/clips/wav/{}.wav'.format(wav)
             mfcc = self.wavtomfcc(file_name)
             list_of_mfccs.append(mfcc)
-            self.list_of_mfccs = list_of_mfccs
+        self.list_of_mfccs = list_of_mfccs
 
     def resize_mfcc(self):
         self.target_size = 64
@@ -82,12 +83,12 @@ class Mfcc():
         self.y_train = np.vstack((self.y_train, np.ones(232).reshape(-1,1)))
 
     def save_mfccs(self):
-        np.save('X_train_moz.npy', self.X_train_std)
-        np.save('X_test_moz.npy', self.X_test_std)
-        np.save('X_val_moz.npy', self.X_val_std)
-        np.save('y_train_moz.npy', self.y_train)
-        np.save('y_test_moz.npy', self.y_test)
-        np.save('y_val_moz.npy', self.y_val)
+        np.save('X_train_moz_uk.npy', self.X_train_std)
+        np.save('X_test_moz_uk.npy', self.X_test_std)
+        np.save('X_val_moz_uk.npy', self.X_val_std)
+        np.save('y_train_moz_uk.npy', self.y_train)
+        np.save('y_test_moz_uk.npy', self.y_test)
+        np.save('y_val_moz_uk.npy', self.y_val)
 
 # 354, 293, 61
 if __name__ == '__main__':
