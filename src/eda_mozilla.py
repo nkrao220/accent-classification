@@ -13,7 +13,7 @@ def clean_df(file):
     df = pd.read_csv(file, sep='\t')
     df_us = df[df['accent']=='us'].sample(16563)
     df_ind = df[df['accent']=='indian']
-    df_uk = df[df['accent']=='england']
+    df_uk = df[df['accent']=='england'].sample(16)
     df = df_us.append(df_ind)
     df = df.append(df_uk)
     df.drop(['client_id', 'sentence', 'up_votes', 'down_votes', 'age', 'gender'],
@@ -53,8 +53,9 @@ class Mfcc():
         self.X = resized_mfcc
 
     def label_samples(self):
-        y_labels = np.array(self.df['accent'])
-        y = np.where(y_labels=='us', 0, 1)
+        uk = self.df[self.df['accent']=='england']
+        y_labels = np.array(uk['accent'])
+        y = np.where(y_labels=='england', 2, 0)
         self.y = y
 
     def split_data(self):
@@ -94,7 +95,7 @@ class Mfcc():
 if __name__ == '__main__':
     df = clean_df('../data/validated.tsv')
     mfcc = Mfcc(df, 'path')
-    mfcc.mp3towav()
+    # mfcc.mp3towav()
     mfcc.create_mfcc()
     mfcc.resize_mfcc()
     mfcc.label_samples()
