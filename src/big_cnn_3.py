@@ -13,6 +13,7 @@ import pydub
 from keras.utils import to_categorical
 import keras
 from keras.models import Sequential
+from keras.layers import Activation, Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 
 model = load_model('../models/final_model_3.h5')
 
