@@ -31,11 +31,37 @@ y_val_hot = to_categorical(y_val, num_classes=3)
 
 callbacks = [TensorBoard(log_dir='./logs')]
 
+model = Sequential()
+model.add(Conv2D(32, (1, 2), input_shape=(16, length, 1)))
+model.add(Activation('relu'))
+model.add(Conv2D(32, (1, 2)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(3, 3)))
+model.add(Dropout(0.5))
+
+model.add(Conv2D(32, (1, 2)))
+model.add(Activation('relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Dropout(0.15))
+
+model.add(Conv2D(64, (1, 2)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+# the model so far outputs 3D feature maps (height, width, features)
+
+model.add(Flatten())  # this converts our 3D feature maps to 1D feature vectors
+model.add(Dense(64))
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+model.add(Dense(3))
+model.add(Activation('softmax'))
+
 model.compile(loss=keras.losses.binary_crossentropy,
               optimizer=keras.optimizers.Adagrad(lr=0.01),
               metrics=['accuracy'])
 
-history = model.fit(X_train, y_train_hot, batch_size=32, epochs=700, verbose=1,
+history = model.fit(X_train, y_train_hot, batch_size=128, epochs=700, verbose=1,
             validation_data=(X_val, y_val_hot), callbacks=callbacks)
 
 
@@ -65,9 +91,11 @@ plt.legend(['Training Accuracy', 'Test Accuracy'])
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 
+plt.tight_layout()
+plt.savefig(three_class_plots.png)
 plt.show();
 
 # what really optimized my model: smaller learning rate, larger number of epochs,
 #
-model.save('final_binary_model.h5')
+model.save('final_tert_model.h5')
 print(model.summary())
