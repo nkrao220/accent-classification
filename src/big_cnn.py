@@ -14,7 +14,7 @@ from keras.utils import to_categorical
 import keras
 from keras.models import Sequential
 
-model = load_model('../models/final_model.h5')
+model = load_model('../models/test_2_class.h5')
 
 
 length = 64
@@ -28,10 +28,10 @@ y_val = np.load('y_val_moz.npy')
 callbacks = [TensorBoard(log_dir='./logs')]
 
 model.compile(loss=keras.losses.binary_crossentropy,
-              optimizer=keras.optimizers.Adam(lr=0.0005),
+              optimizer=keras.optimizers.Adam(lr=0.001),
               metrics=['accuracy'])
 
-history = model.fit(X_train, y_train, batch_size=32, epochs=300, verbose=1,
+history = model.fit(X_train, y_train, batch_size=128, epochs=1000, verbose=1,
             validation_data=(X_val, y_val), callbacks=callbacks)
 
 
