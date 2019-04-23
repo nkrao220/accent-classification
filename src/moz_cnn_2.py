@@ -15,7 +15,7 @@ import keras
 from keras.models import Sequential
 from keras.layers import Activation, Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 
-model = load_model('../models/test_2_class.h5')
+model = load_model('../models/test_2_class_gmu.h5')
 
 
 length = 64
