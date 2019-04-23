@@ -13,6 +13,7 @@ import pydub
 from keras.utils import to_categorical
 import keras
 from keras.models import Sequential
+from keras.layers import Activation, Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 
 model = load_model('../models/test_2_class.h5')
 
@@ -90,6 +91,7 @@ plt.legend(['Training Accuracy', 'Test Accuracy'])
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 
+plt.savefig('binary_plots_newest')
 plt.show();
 
 # what really optimized my model: smaller learning rate, larger number of epochs,
