@@ -1,5 +1,6 @@
 # Binary Accent Classification in Speech
 <img src="img/header.jpeg" width="1000">
+
 - [Binary Accent Classification in Speech](#binary-accent-classification-in-speech)
     + [Overview](#overview)
     + [Dataset](#dataset)
@@ -27,7 +28,7 @@ Successful accent detection would allow voice recognition systems to expand thei
 <b>Cute Example</b>:  
 <a href="https://www.youtube.com/embed/JzfBedGaIjU"
  target="_blank"><img src="http://img.youtube.com/vi/JzfBedGaIjU/0.jpg"
-alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 ### Objectives
 + Be able to build a model that can classify the accent of the speaker using a raw audio file.
@@ -44,6 +45,8 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 >  "Please call Stella. Ask her to bring these things with her from the store:  Six spoons of fresh snow peas, five thick slabs of blue cheese, and maybe a snack for her brother Bob.  We also need a small plastic snake and a big toy frog for the kids.  She can scoop these things into three red bags, and we will go meet her Wednesday at the train station."
 
 I decided to also work with Mozilla Voice data. The Mozilla Voice data contains tens of thousands of files of native and non-native speakers speaking different sentences. Because the audio files are so different from speaker to speaker, I am working with the smaller, more static, Speech Accent Archive first in order to get a good working model that will identify the correct signal and then use those saved weights to train the Mozilla Voice data.
+
+!Need table of samples for each class
 
 ## Mel Frequency Cepstrum Coefficients (MFCC)
 I decided to vectorize the audio files by creating MFCC's. MFCC's are meant to mimic the biological process of humans creating sound to produce phonemes and the way humans perceive these sounds.
@@ -120,6 +123,8 @@ Once I was able to prove that my pipeline was working, I moved onto classifying 
 
 To create the MFCCs, I binned into 31 ms increments (chosen because it gives close to 512 bins, which makes setting up a CNN easier, 13 MFCCs, and the default settings for everything else.
 
+The classes are imbalanced in both datasets, with US accents being the most represented. In the case of the Speech Accent Archive Data, I decided to oversample the minority classes so that they would have a similar size. For the Mozilla Data, I decided to undersample. The least represented accent in this dataset is Indian, with ~16,000 samples. That is plenty of data to train a CNN, so I decided undersampling US and UK accents would be easiest.
+
 ### PCA
 Before I got started on creating any models, I wanted to make sure that there were differences in my accent groupings, so I performed PCA on the Speech Accent Archive Data.
 
@@ -130,12 +135,12 @@ Before I got started on creating any models, I wanted to make sure that there we
 There's some separation, but not too much...
 
 #### 3D PCA
-<img src="img/3D_pca_two_class.gif">
-Here we can start to see some separation. The clusters are not clearly defined, but that is to be expected as there's probably overlap between between these accents because people native to India could also be settled in the US and vice versa.
+<img src="img/3D_pca_two_class.gif">   
+Here we can start to see some separation. The clusters are not clearly defined, but that is to be expected as there's probably overlap between between these accents because people native to India could also be settled in the US and vice versa. Listening to some of the Indian audio files shows that some of the accents labeled Indian have American English sounding speech patterns.
 
 ##### Three Class PCA
-<img src="img/3D_pca_three_class.gif">
-There is also good separation in this graph.
+
+There is also good separation in this graph, so I feel confident I can get decent results classifying three accents as well.
 ### Difference in Accents
 
 <img src="img/side_by_side_heatmap.png" width="600">
@@ -154,6 +159,10 @@ Picked two raw audio files from each accent that were similar in length to the m
 ### CNN
 My model:  
 <img src="img/cnn_printout.png" width="600">
+
+Because the Mozilla Dataset has a lot of variability in terms of what the speaker is reciting, I decided to use the Speech Accent Archive Data first and save the weights from my model with the highest accuracy to train the Mozilla Dataset. This method worked very well and saved a lot of training time because my Mozilla Data would start off at ~65% validation accuracy at the first epoch.
+
+Due to the file size of the Mozilla Voice Data, I had to store and train my data using AWS.
 
 #### Two Accent Classification Results
 <img src="img/two_class_gmu_130_epochs.png" width="600">
@@ -188,6 +197,13 @@ Besides, the training loss is the average of the losses over each batch of train
 
 <b>Test Accuracy on Holdout Data: 90% </b>
 
+My three accent model did worse on the Speech Accent Archive Data but better on the Mozilla Data. It makes sense that a model trained on a small dataset with class imbalance would have worse performance for more classes. However, when training the Mozilla Dataset, the model does better because there is an extra 16,000 data points. CNN's are data hungry so the increase in performance with more data seems reasonable.
+
+#### Comparison of Three Class Model With and Without Transfer Learning
+
+#### Was Transfer Learning Necessary?
+
+
 ## Future Work
 
 ### Current dataset
@@ -195,8 +211,6 @@ I could try to optimize this model even further. People have had success using t
 
 Unfortunately, my data is not very interpretable, making it really hard to tell if my model is picking up on signal in my data. I would like to try using the same data with saved MFCC images. This way, I could plot neuron activation against an image and see what a CNN picks up on with MFCC's.
 
-Try to classify more accents. I've only worked on the two most represented accents. I would ultimately like to training a CNN to classify four accents. Unfortunately, the rest of the accents in my dataset have too few samples to train on.
+Additionally, CNN's may not need us to process data into MFCC's, which is a step that is very important for success with HMM and GMM models. However, a CNN should be able to pick up on signal without all the processing, so it would be interesting to see if a spectrogram would perform as well as an MFCC.
 
-### Mozilla Voice Dataset
-
-Once I have a model that works well, I would like to use that same model to test on the Mozilla Voice Data. This dataset consists of speakers of various accents speaking different sentences. I'm curious if my models would be able to classify well on data that is more random.
+Try to classify more accents. I've only worked on the three most represented accents. I would ultimately like to train a CNN to classify most of the accents in the Mozilla Voice data (except for the accents that have very few samples).
