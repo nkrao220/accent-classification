@@ -1,5 +1,5 @@
 # Binary Accent Classification in Speech
-<img src="img/header.jpeg" width="1000">
+<img src="img/header.jpeg" width="900">
 
 - [Binary Accent Classification in Speech](#binary-accent-classification-in-speech)
     + [Overview](#overview)
@@ -58,8 +58,9 @@ Phonemes are base units of sounds that combine to make up words for a language. 
 ### Overview
   <b>1) Bin the raw audio signal </b>  
   Since the motivation is to produce a matrix from a continuous signal, we will have to start by binning the audio signal. On short time scales, we assume that audio signals do not change very much. Longer frames will vary too much and shorter frames will not provide enough signal. The standard is to bin the raw audio signal into 20-40 ms frames.
+  <p align="center"><img src="img/raw_audio_to_mfcc.png"></p>
 
-  <img src="img/rawaudioex.png" width="350"> <img src="img/spectrogramex.png" width="400">
+
 
   The following steps are applied over every single one of the frames and a set of coefficients is determined for every frame:
 
@@ -67,11 +68,11 @@ Phonemes are base units of sounds that combine to make up words for a language. 
   <b>2) Calculate the periodogram power estimates</b>  
   This process models how the cochlea interprets sounds by vibrating at different locations based on the incoming frequencies. The periodogram is an analog for this process as it measures spectral density at different frequencies. First, we need to take the Discrete Fourier Transform of every frame. The periodogram power estimate is calculated using the following equation:   
 
-  <img src="img/power.png" width="230">
+  <p align="center"><img src="img/power.png" width="230"></p>
 
-  <img src="img/fourier.png" width="300">
+  <p align="center"><img src="img/fourier.png" width="300"></p>
 
-  <img src="img/periodogram.png" width="300">
+  <p align="center"><img src="img/periodogram.png" width="300"></p>
 
   <b>3) Apply mel filterbank and sum energies in each filter </b>  
   The cochlea can't differentiate between frequencies that are very close to each other. This problem is amplified at higher frequencies, meaning that greater ranges of frequencies will be increasingly interpreted as the same pitch. So, we sum up the signal at various increasing ranges of frequencies to get a measure of the energy density in each range.
@@ -79,10 +80,10 @@ Phonemes are base units of sounds that combine to make up words for a language. 
   This filterbank is a set of 26 triangular filters. These filters are vectors that are mostly zero, except for a small range of the spectrum. First, we convert frequencies to the Mel Scale (converts actual tone of a frequency to its perceived frequency). Then we multiply each filter with the power spectrum and add up the resulting coefficients in order to obtain the filterbank energies. In the end, we will have a single coefficient for each filter.
 
   Mel Scale Conversion:  
-  <img src="img/mel_scale.png" width="300">
+  <p align="center"><img src="img/mel_scale.png" width="300"></p>
 
   Filterbanks [(2)](http://www.practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/):  
-<img src="img/mel_filterbank.png" width="600">
+  <p align="center"><img src="img/mel_filterbank.png" width="600"></p>
 
   <b>4) Take log of all filter energies </b>  
   We need to take the log of the previously calculated filterbank energies because humans can differentiate between low frequency sounds better than they can between high frequency sounds. The shape of the matrix hasn't changed, so we still have 26 coefficients.
@@ -90,7 +91,7 @@ Phonemes are base units of sounds that combine to make up words for a language. 
   <b>5) Take Discrete Cosine Transform (DCT) of the log filterbank energies </b>  
   Because the standard is to create overlapping filterbanks, these energies are correlated and we use DCT to decorrelate them. The higher DCT coefficients are then dropped, which has been shown to perform model performance, leaving us with 13 cepstral coefficients.
 
-  <img src="img/DCT.png" width="600">
+  <p align="center"><img src="img/DCT.png" width="600"></p>
 
 Resources for learning about MFCC's:   
 1) [Pratheeksha Nair's Medium Aricle](https://medium.com/prathena/the-dummys-guide-to-mfcc-aceab2450fd)  
@@ -130,7 +131,7 @@ Before I got started on creating any models, I wanted to make sure that there we
 
 #### 2D PCA
 
-<img src="img/pca_2d.png">
+<img src="img/pca_2d_6_6.png">
 
 There's some separation, but not too much...
 
@@ -140,15 +141,20 @@ Here we can start to see some separation. The clusters are not clearly defined, 
 
 ##### Three Class PCA
 
+<img src="img/3D_pca_three_class.gif">   
+
 There is also good separation in this graph, so I feel confident I can get decent results classifying three accents as well.
+
 ### Difference in Accents
+I wanted to see if I could see what type of signal my CNN would pick up on. I decided to calculate the mean MFCC's and take the difference of each unique group of two accents to see where two accents differ from each other.
 
 <img src="img/side_by_side_heatmap.png" width="600">
 
-<img src="img/mean_heatmap.png" width="600">
+<img src="img/mean_us_uk_mfcc.png" width="600">
+<img src="img/mean_us_india_mfcc.png" width="600">
+<img src="img/mean_uk_india_mfcc.png" width="600">
 
-
-Picked two raw audio files from each accent that were similar in length to the mean spectrograms above. I picked two points that seemed to have the highest values in the subtracted mean spectrogram. I then listened to the audio files and found that the times corresponded to the following words: "Stella" at 2 seconds and "We need a small plastic snake" around 11 seconds.
+Picked two raw audio files from US and Indian accents that were similar in length to the mean spectrograms above. I picked two points that seemed to have the highest values in the subtracted mean spectrogram. I then listened to the audio files and found that the times corresponded to the following words: "Stella" at 2 seconds and "We need a small plastic snake" around 11 seconds.
 
 <img src="img/hindi9raw.png" width="600">
 
@@ -158,7 +164,7 @@ Picked two raw audio files from each accent that were similar in length to the m
 
 ### CNN
 My model:  
-<img src="img/cnn_printout.png" width="600">
+<img src="img/cnn_architecture.png" width="600">
 
 Because the Mozilla Dataset has a lot of variability in terms of what the speaker is reciting, I decided to use the Speech Accent Archive Data first and save the weights from my model with the highest accuracy to train the Mozilla Dataset. This method worked very well and saved a lot of training time because my Mozilla Data would start off at ~65% validation accuracy at the first epoch.
 
@@ -180,12 +186,6 @@ From [Keras FAQ](https://keras.io/getting-started/faq/):
 
 Besides, the training loss is the average of the losses over each batch of training data. Because your model is changing over time, the loss over the first batches of an epoch is generally higher than over the last batches. On the other hand, the testing loss for an epoch is computed using the model as it is at the end of the epoch, resulting in a lower loss."
 
-##### Confusion Matrix
-
-|                 | Actual True | Actual False |
-|-----------------|-------------|--------------|
-| Predicted True  | 20          | 9            |
-| Predicted False | 5           | 14           |
 
 #### Three Accents Classification Results
 ##### Speech Accent Archive Data
@@ -199,10 +199,22 @@ Besides, the training loss is the average of the losses over each batch of train
 
 My three accent model did worse on the Speech Accent Archive Data but better on the Mozilla Data. It makes sense that a model trained on a small dataset with class imbalance would have worse performance for more classes. However, when training the Mozilla Dataset, the model does better because there is an extra 16,000 data points. CNN's are data hungry so the increase in performance with more data seems reasonable.
 
-#### Comparison of Three Class Model With and Without Transfer Learning
+The sudden dips in accuracy are a little worrisome so I decided to try a smaller learning rate to see if it's a problem with my gradient descent. The smaller learning rate (0.0001) really improved the number of dips. With more time, I would try an even smaller learning rate to see if I can entirely eliminate the dips.
+
+<img src="img/three_class_plots_small_lr.png" width="600">
 
 #### Was Transfer Learning Necessary?
 
+Transfer Learning was not needed. However, the power of transfer learning can be seen in the graph below, which shows the first 150 epochs of a model that uses the same architecture as my three class model but doesn't use saved weights. The model needs to train longer to get to a good accuracy. When dealing with as much data as we are, the more we can save computation time, the better. Especially considering that the smaller model took less than five minutes to train locally, the transfer learning model seems superior.
+
+<img src="img/three_class_plots_wo_transfer.png" width="600">
+
+## Incorrect Classifications
+Going back and listening to the files where my model failed brought two conclusions:
+ + The majority of the misclassified test data was incorrectly labeled
+ + Most of the remaining misclassified data was problematic because the accent seemed to be a blend, indicating that the speaker may also be fluent in another language.
+
+While it would be best if the model could also correctly classify these blended accents, the blended accents may not pose a serious problem because speech recognition systems may not have a problem picking up what these speakers are saying. For example, a speech recognition system trained mainly on US data may be able to pick up fairly well on a speaker who from the UK who has spent a fair amount of time in the US. As long as the model is classifying speakers with more traditional UK accents, we can build another speech recognition model for these speakers.
 
 ## Future Work
 
