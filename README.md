@@ -46,7 +46,6 @@ Successful accent detection would allow voice recognition systems to expand thei
 
 I decided to also work with Mozilla Voice data. The Mozilla Voice data contains tens of thousands of files of native and non-native speakers speaking different sentences. Because the audio files are so different from speaker to speaker, I am working with the smaller, more static, Speech Accent Archive first in order to get a good working model that will identify the correct signal and then use those saved weights to train the Mozilla Voice data.
 
-!Need table of samples for each class
 
 ## Mel Frequency Cepstrum Coefficients (MFCC)
 I decided to vectorize the audio files by creating MFCC's. MFCC's are meant to mimic the biological process of humans creating sound to produce phonemes and the way humans perceive these sounds.
@@ -122,7 +121,7 @@ For my first analysis, I decided to stick to a binary classification. I choose t
 
 Once I was able to prove that my pipeline was working, I moved onto classifying the three accents with the most samples in the Speech Accent Archive Dataset: USA, India (South Asia), and the UK.
 
-To create the MFCCs, I binned into 31 ms increments (chosen because it gives close to 512 bins, which makes setting up a CNN easier, 13 MFCCs, and the default settings for everything else.
+To create the MFCCs, I binned into 31 ms increments (chosen because it gives 64 bins, which makes setting up a CNN easier), 13 MFCCs, and the default settings for everything else.
 
 The classes are imbalanced in both datasets, with US accents being the most represented. In the case of the Speech Accent Archive Data, I decided to oversample the minority classes so that they would have a similar size. For the Mozilla Data, I decided to undersample. The least represented accent in this dataset is Indian, with ~16,000 samples. That is plenty of data to train a CNN, so I decided undersampling US and UK accents would be easiest.
 
@@ -131,51 +130,51 @@ Before I got started on creating any models, I wanted to make sure that there we
 
 #### 2D PCA
 
-<img src="img/pca_2d_6_6.png">
+<p align="center"><img src="img/pca_2d_6_6.png"></p>
 
 There's some separation, but not too much...
 
 #### 3D PCA
-<img src="img/3D_pca_two_class.gif">   
+<p align="center"><img src="img/3D_pca_two_class.gif"></p>
 Here we can start to see some separation. The clusters are not clearly defined, but that is to be expected as there's probably overlap between between these accents because people native to India could also be settled in the US and vice versa. Listening to some of the Indian audio files shows that some of the accents labeled Indian have American English sounding speech patterns.
 
 ##### Three Class PCA
 
-<img src="img/3D_pca_three_class.gif">   
+<p align="center"><img src="img/3D_pca_three_class.gif"></p>
 
 There is also good separation in this graph, so I feel confident I can get decent results classifying three accents as well.
 
 ### Difference in Accents
 I wanted to see if I could see what type of signal my CNN would pick up on. I decided to calculate the mean MFCC's and take the difference of each unique group of two accents to see where two accents differ from each other.
 
-<img src="img/side_by_side_heatmap.png" width="600">
+<p align="center"><img src="img/side_by_side_heatmap.png" width="600"></p>
 
-<img src="img/mean_us_uk_mfcc.png" width="600">
-<img src="img/mean_us_india_mfcc.png" width="600">
-<img src="img/mean_uk_india_mfcc.png" width="600">
+<p align="center"><img src="img/mean_us_uk_mfcc.png" width="600"></p>
+<p align="center"><img src="img/mean_us_india_mfcc.png" width="600"></p>
+<p align="center"><img src="img/mean_uk_india_mfcc.png" width="600"></p>
 
 Picked two raw audio files from US and Indian accents that were similar in length to the mean spectrograms above. I picked two points that seemed to have the highest values in the subtracted mean spectrogram. I then listened to the audio files and found that the times corresponded to the following words: "Stella" at 2 seconds and "We need a small plastic snake" around 11 seconds.
 
-<img src="img/hindi9raw.png" width="600">
+<p align="center"><img src="img/hindi9raw.png" width="400"></p>
 
-<img src="img/english3raw.png" width="599">
+<p align="center"><img src="img/english3raw.png" width="400"></p>
 
 ## Analysis
 
 ### CNN
 My model:  
-<img src="img/cnn_architecture.png" width="600">
+<p align="center"><img src="img/cnn_architecture.png" width="600"></p>
 
 Because the Mozilla Dataset has a lot of variability in terms of what the speaker is reciting, I decided to use the Speech Accent Archive Data first and save the weights from my model with the highest accuracy to train the Mozilla Dataset. This method worked very well and saved a lot of training time because my Mozilla Data would start off at ~65% validation accuracy at the first epoch.
 
-Due to the file size of the Mozilla Voice Data, I had to store and train my data using AWS.
+Due to the file size of the Mozilla Voice Data, I had to store and train my data using AWS (p2xl instance using an attached EBS volume).
 
 #### Two Accent Classification Results
-<img src="img/two_class_gmu_130_epochs.png" width="600">
+<p align="center"><img src="img/two_class_gmu_130_epochs.png" width="600"></p>
 
 <b>Test Accuracy on Holdout Data: 78% </b>
 ##### Mozilla Voice Data
-<img src="img/binary_plots_newest.png" width="600">
+<p align="center"><img src="img/binary_plots_newest.png" width="600"></p>
 
 <b>Test Accuracy on Holdout Data: 87% </b>
 
@@ -189,11 +188,11 @@ Besides, the training loss is the average of the losses over each batch of train
 
 #### Three Accents Classification Results
 ##### Speech Accent Archive Data
-<img src="img/final_cnn_plot_small.png" width="600">
+<p align="center"><img src="img/final_cnn_plot_small.png" width="600"></p>
 
 <b>Test Accuracy on Holdout Data: 73% </b>
 ##### Mozilla Voice Data
-<img src="img/three_class_plots.png" width="600">
+<p align="center"><img src="img/three_class_plots.png" width="600"></p>
 
 <b>Test Accuracy on Holdout Data: 90% </b>
 
@@ -201,13 +200,13 @@ My three accent model did worse on the Speech Accent Archive Data but better on 
 
 The sudden dips in accuracy are a little worrisome so I decided to try a smaller learning rate to see if it's a problem with my gradient descent. The smaller learning rate (0.0001) really improved the number of dips. With more time, I would try an even smaller learning rate to see if I can entirely eliminate the dips.
 
-<img src="img/three_class_plots_small_lr.png" width="600">
+<p align="center"><img src="img/three_class_plots_small_lr.png" width="600"></p>
 
 #### Was Transfer Learning Necessary?
 
 Transfer Learning was not needed. However, the power of transfer learning can be seen in the graph below, which shows the first 150 epochs of a model that uses the same architecture as my three class model but doesn't use saved weights. The model needs to train longer to get to a good accuracy. When dealing with as much data as we are, the more we can save computation time, the better. Especially considering that the smaller model took less than five minutes to train locally, the transfer learning model seems superior.
 
-<img src="img/three_class_plots_wo_transfer.png" width="600">
+<p align="center"><img src="img/three_class_plots_wo_transfer.png" width="600"></p>
 
 ## Incorrect Classifications
 Going back and listening to the files where my model failed brought two conclusions:
