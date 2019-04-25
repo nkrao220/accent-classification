@@ -4,7 +4,7 @@
 * [Overview](#overview)
 * [Objectives](#objectives)
 * [Dataset](#dataset)
-- [Mel Frequency Cepstrum Coefficients (MFCC)](#mel-frequency-cepstrum-coefficients--mfcc-)
+- [Mel Frequency Cepstrum Coefficients](#mel-frequency-cepstrum-coefficients--mfcc-)
 * [Motivation](#motivation)
 * [Overview](#overview-1)
 - [EDA](#eda)
