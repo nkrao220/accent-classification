@@ -1,22 +1,29 @@
 # Binary Accent Classification in Speech
 <img src="img/header.jpeg" width="900">
 
-- [Binary Accent Classification in Speech](#binary-accent-classification-in-speech)
-    + [Overview](#overview)
-    + [Dataset](#dataset)
-    + [Mel Frequency Cepstrum Coefficients (MFCC)](#mel-frequency-cepstrum-coefficients--mfcc-)
-  * [Motivation](#motivation)
-  * [Overview](#overview-1)
-    + [EDA](#eda)
-    + [PCA](#pca)
-      - [2D PCA](#2d-pca)
-      - [3D PCA](#3d-pca)
-    + [Difference in Accents](#difference-in-accents)
-  * [Analysis](#analysis)
-    + [CNN](#cnn)
-    + [Future Work](#future-work)
-  * [Current dataset](#current-dataset)
-  * [Mozilla Voice Dataset](#mozilla-voice-dataset)
+* [Overview](#overview)
+* [Objectives](#objectives)
+* [Dataset](#dataset)
+- [Mel Frequency Cepstrum Coefficients (MFCC)](#mel-frequency-cepstrum-coefficients--mfcc-)
+* [Motivation](#motivation)
+* [Overview](#overview-1)
+- [EDA](#eda)
+* [PCA](#pca)
+  + [2D PCA](#2d-pca)
+  + [3D PCA](#3d-pca)
+    - [Three Class PCA](#three-class-pca)
+* [Difference in Accents](#difference-in-accents)
+- [Analysis](#analysis)
+* [CNN](#cnn)
+  + [Two Accent Classification Results](#two-accent-classification-results)
+    - [Mozilla Voice Data](#mozilla-voice-data)
+  + [Three Accents Classification Results](#three-accents-classification-results)
+    - [Speech Accent Archive Data](#speech-accent-archive-data)
+    - [Mozilla Voice Data](#mozilla-voice-data-1)
+  + [Was Transfer Learning Necessary?](#was-transfer-learning-necessary-)
+- [Incorrect Classifications](#incorrect-classifications)
+- [Future Work](#future-work)
+* [Current dataset](#current-dataset)
 
 
 ### Overview
@@ -27,7 +34,7 @@ Successful accent detection would allow voice recognition systems to expand thei
 
 <b>Cute Example</b>:  
 <a href="https://www.youtube.com/embed/JzfBedGaIjU"
- target="_blank"><img src="http://img.youtube.com/vi/JzfBedGaIjU/0.jpg"
+ target="blank"><img src="http://img.youtube.com/vi/JzfBedGaIjU/0.jpg"
  alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 ### Objectives
