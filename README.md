@@ -151,6 +151,8 @@ Here we can start to see some separation. The clusters are not clearly defined, 
 
 There is also good separation in this graph, so I feel confident I can get decent results classifying three accents as well.
 
+(Code for rotating PCA plot modified from [this repo](https://github.com/Jasminehh/doodle_image_recognition_CNN/blob/master/README.md))
+
 ### Difference in Accents
 I wanted to see if I could see what type of signal my CNN would pick up on. I decided to calculate the mean MFCC's and take the difference of each unique group of two accents to see where two accents differ from each other.
 
