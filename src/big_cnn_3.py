@@ -58,7 +58,7 @@ model.add(Dropout(0.5))
 model.add(Dense(3))
 model.add(Activation('softmax'))
 
-model.compile(loss=keras.losses.binary_crossentropy,
+model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adagrad(lr=0.01),
               metrics=['accuracy'])
 
